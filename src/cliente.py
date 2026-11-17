@@ -6,16 +6,24 @@ from entidad import Entidad
 class Cliente(Entidad):
     """
     Representa un cliente del sistema.
-    Aplica encapsulación y validaciones de datos.
+    Aplica encapsulacion y validaciones de datos.
     """
 
     def __init__(self, identificador, nombre, documento, correo, telefono):
         super().__init__(identificador)
 
-        self.__nombre = nombre.strip() if isinstance(nombre, str) else ""
-        self.__documento = str(documento).strip()
-        self.__correo = correo.strip().lower() if isinstance(correo, str) else ""
-        self.__telefono = str(telefono).strip()
+        self.__nombre = (
+            " ".join(nombre.split()) if isinstance(nombre, str) else ""
+        )
+        self.__documento = (
+            str(documento).strip() if documento is not None else ""
+        )
+        self.__correo = (
+            correo.strip().lower() if isinstance(correo, str) else ""
+        )
+        self.__telefono = (
+            str(telefono).strip() if telefono is not None else ""
+        )
 
         self.validar()
 
@@ -36,40 +44,54 @@ class Cliente(Entidad):
         return self.__telefono
 
     def validar(self):
+        # Validar nombre
         if not self.__nombre:
             raise ValueError("El nombre del cliente es obligatorio.")
 
-        if not re.fullmatch(
-            r"[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{2,80}",
-            self.__nombre
+        if not (2 <= len(self.__nombre) <= 80):
+            raise ValueError(
+                "El nombre debe tener entre 2 y 80 caracteres."
+            )
+
+        if not all(
+            caracter.isalpha() or caracter in " -'’"
+            for caracter in self.__nombre
         ):
-            raise ValueError("El nombre contiene caracteres no permitidos.")
-
-        if not re.fullmatch(r"\d{5,15}", self.__documento):
             raise ValueError(
-                "El documento debe contener entre 5 y 15 dígitos."
+                "El nombre contiene caracteres no permitidos."
             )
 
-        patron_correo = r"^[\w.+-]+@[\w-]+\.[A-Za-z]{2,}$"
-
-        if not re.fullmatch(patron_correo, self.__correo):
+        # Validar documento
+        if not re.fullmatch(r"[0-9]{5,15}", self.__documento):
             raise ValueError(
-                "El correo electrónico no tiene un formato válido."
+                "El documento debe contener entre 5 y 15 digitos."
             )
 
-        if not re.fullmatch(r"\+?\d{7,15}", self.__telefono):
+        # Validar correo
+        if not self._correo_valido(self.__correo):
             raise ValueError(
-                "El teléfono debe contener entre 7 y 15 dígitos."
+                "El correo electronico no tiene un formato valido."
+            )
+
+        # Validar telefono
+        if not re.fullmatch(r"\+?[0-9]{7,15}", self.__telefono):
+            raise ValueError(
+                "El telefono debe contener entre 7 y 15 digitos."
             )
 
         return True
+
+    @staticmethod
+    def _correo_valido(correo):
+        patron_correo = r"^[\w.+-]+@[\w-]+\.[A-Za-z]{2,}$"
+        return bool(re.fullmatch(patron_correo, correo))
 
     def obtener_informacion(self):
         return (
             f"Cliente: {self.__nombre} | "
             f"Documento: {self.__documento} | "
             f"Correo: {self.__correo} | "
-            f"Teléfono: {self.__telefono}"
+            f"Telefono: {self.__telefono}"
         )
 
     def actualizar_correo(self, nuevo_correo):
@@ -78,13 +100,11 @@ class Cliente(Entidad):
 
         nuevo_correo = nuevo_correo.strip().lower()
 
-        patron_correo = r"^[\w.+-]+@[\w-]+\.[A-Za-z]{2,}$"
-
-        if not re.fullmatch(patron_correo, nuevo_correo):
+        if not self._correo_valido(nuevo_correo):
             raise ValueError(
-                "El nuevo correo no tiene un formato válido."
+                "El nuevo correo no tiene un formato valido."
             )
 
         self.__correo = nuevo_correo
 
-        return "Correo electrónico actualizado correctamente."
+        return "Correo electronico actualizado correctamente."

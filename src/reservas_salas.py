@@ -35,7 +35,7 @@ class ReservaSala(Servicio):
             raise ValueError("El nombre de la sala es obligatorio.")
 
         if not self.descripcion:
-            raise ValueError("La descripción de la sala es obligatoria.")
+            raise ValueError("La descripcion de la sala es obligatoria.")
 
         if (
             isinstance(self._capacidad, bool)
@@ -46,59 +46,27 @@ class ReservaSala(Servicio):
                 "La capacidad debe ser un entero mayor que cero."
             )
 
-        if (
-            isinstance(self._costo_por_hora, bool)
-            or not isinstance(self._costo_por_hora, (int, float))
-            or self._costo_por_hora <= 0
-        ):
-            raise ValueError(
-                "El costo por hora debe ser mayor que cero."
-            )
+        Servicio.validar_numero(
+            self._costo_por_hora,
+            "El costo por hora",
+            estrictamente_positivo=True
+        )
 
         return True
 
     def calcular_costo(self, duracion, descuento=0, impuesto=0):
-        if (
-            isinstance(duracion, bool)
-            or not isinstance(duracion, (int, float))
-            or duracion <= 0
-        ):
-            raise ValueError(
-                "La duración debe ser mayor que cero."
-            )
-
-        if (
-            isinstance(descuento, bool)
-            or not isinstance(descuento, (int, float))
-            or not 0 <= descuento <= 100
-        ):
-            raise ValueError(
-                "El descuento debe estar entre 0 y 100."
-            )
-
-        if (
-            isinstance(impuesto, bool)
-            or not isinstance(impuesto, (int, float))
-            or not 0 <= impuesto <= 100
-        ):
-            raise ValueError(
-                "El impuesto debe estar entre 0 y 100."
-            )
-
-        subtotal = self._costo_por_hora * duracion
-        valor_descuento = subtotal * (descuento / 100)
-        total_con_descuento = subtotal - valor_descuento
-
-        return round(
-            total_con_descuento * (1 + impuesto / 100),
-            2
+        return Servicio.calcular_total(
+            duracion,
+            self._costo_por_hora,
+            descuento,
+            impuesto
         )
 
     def obtener_informacion(self):
         return (
             f"Servicio: {self.nombre} | "
             f"Tipo: Reserva de sala | "
-            f"Descripción: {self.descripcion} | "
+            f"Descripcion: {self.descripcion} | "
             f"Capacidad: {self._capacidad} personas | "
             f"Costo por hora: ${self._costo_por_hora:,.2f}"
         )

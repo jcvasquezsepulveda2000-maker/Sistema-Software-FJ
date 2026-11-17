@@ -2,7 +2,7 @@
 import sys
 from pathlib import Path
 
-# Permitir que Python encuentre los módulos de la carpeta src
+# Permitir que Python encuentre los modulos de la carpeta src
 RUTA_SRC = Path(__file__).resolve().parent / "src"
 if str(RUTA_SRC) not in sys.path:
     sys.path.insert(0, str(RUTA_SRC))
@@ -70,12 +70,14 @@ def ejecutar_sistema():
         )
 
         clientes.append(cliente)
-        print(cliente.obtener_informacion())
-        registrar_evento("Cliente registrado correctamente.")
 
     except (ValueError, TypeError) as error:
         cliente = None
         registrar_error(f"Error al registrar cliente: {error}")
+
+    else:
+        print(cliente.obtener_informacion())
+        registrar_evento("Cliente registrado correctamente.")
 
     # -------------------------------------------------
     # OPERACION 2: CREAR UN CLIENTE INVALIDO
@@ -120,9 +122,9 @@ def ejecutar_sistema():
         registrar_error(f"Error al crear sala: {error}")
 
     # -------------------------------------------------
-    # OPERACION 4: CALCULAR COSTO DE SALA
+    # OPERACION 4: DEMOSTRAR VARIANTES DE CALCULO
     # -------------------------------------------------
-    mostrar_titulo("OPERACION 4: CALCULO DE COSTO")
+    mostrar_titulo("OPERACION 4: VARIANTES DE CALCULO")
 
     try:
         if sala is None:
@@ -130,14 +132,38 @@ def ejecutar_sistema():
                 "No existe una sala disponible para calcular."
             )
 
-        total_sala = sala.calcular_costo(
+        # Calculo del costo base.
+        costo_base = sala.calcular_costo(duracion=3)
+
+        # Calculo aplicando descuento.
+        costo_descuento = sala.calcular_costo_con_descuento(
+            duracion=3,
+            descuento=10
+        )
+
+        # Calculo aplicando impuestos.
+        costo_impuesto = sala.calcular_costo_con_impuestos(
+            duracion=3,
+            impuesto=19
+        )
+
+        # Calculo aplicando descuento e impuestos.
+        costo_final = sala.calcular_costo(
             duracion=3,
             descuento=10,
             impuesto=19
         )
 
-        print(f"Costo total de la sala: ${total_sala:,.2f}")
-        registrar_evento("Costo de reserva de sala calculado.")
+        print(f"Costo base: ${costo_base:,.2f}")
+        print(f"Costo con descuento: ${costo_descuento:,.2f}")
+        print(f"Costo con impuestos: ${costo_impuesto:,.2f}")
+        print(
+            f"Costo con descuento e impuestos: ${costo_final:,.2f}"
+        )
+
+        registrar_evento(
+            "Se realizaron las cuatro variantes de calculo del servicio."
+        )
 
     except (ValueError, TypeError) as error:
         registrar_error(f"Error en calculo de sala: {error}")

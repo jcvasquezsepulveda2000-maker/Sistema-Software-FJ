@@ -35,7 +35,7 @@ class AlquilerEquipo(Servicio):
             raise ValueError("El nombre del equipo es obligatorio.")
 
         if not self.descripcion:
-            raise ValueError("La descripción del equipo es obligatoria.")
+            raise ValueError("La descripcion del equipo es obligatoria.")
 
         if (
             isinstance(self._cantidad_disponible, bool)
@@ -46,12 +46,11 @@ class AlquilerEquipo(Servicio):
                 "La cantidad disponible debe ser un entero no negativo."
             )
 
-        if (
-            isinstance(self._costo_por_hora, bool)
-            or not isinstance(self._costo_por_hora, (int, float))
-            or self._costo_por_hora <= 0
-        ):
-            raise ValueError("El costo por hora debe ser mayor que cero.")
+        Servicio.validar_numero(
+            self._costo_por_hora,
+            "El costo por hora",
+            estrictamente_positivo=True
+        )
 
         return True
 
@@ -79,38 +78,18 @@ class AlquilerEquipo(Servicio):
         )
 
     def calcular_costo(self, duracion, descuento=0, impuesto=0):
-        if (
-            isinstance(duracion, bool)
-            or not isinstance(duracion, (int, float))
-            or duracion <= 0
-        ):
-            raise ValueError("La duración debe ser mayor que cero.")
-
-        if (
-            isinstance(descuento, bool)
-            or not isinstance(descuento, (int, float))
-            or not 0 <= descuento <= 100
-        ):
-            raise ValueError("El descuento debe estar entre 0 y 100.")
-
-        if (
-            isinstance(impuesto, bool)
-            or not isinstance(impuesto, (int, float))
-            or not 0 <= impuesto <= 100
-        ):
-            raise ValueError("El impuesto debe estar entre 0 y 100.")
-
-        subtotal = self._costo_por_hora * duracion
-        valor_descuento = subtotal * (descuento / 100)
-        total = subtotal - valor_descuento
-
-        return round(total * (1 + impuesto / 100), 2)
+        return Servicio.calcular_total(
+            duracion,
+            self._costo_por_hora,
+            descuento,
+            impuesto
+        )
 
     def obtener_informacion(self):
         return (
             f"Servicio: {self.nombre} | "
             f"Tipo: Alquiler de equipos | "
-            f"Descripción: {self.descripcion} | "
+            f"Descripcion: {self.descripcion} | "
             f"Cantidad disponible: {self._cantidad_disponible} | "
             f"Costo por hora: ${self._costo_por_hora:,.2f}"
         )
