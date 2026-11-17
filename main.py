@@ -4,7 +4,8 @@ from pathlib import Path
 
 # Permitir que Python encuentre los módulos de la carpeta src
 RUTA_SRC = Path(__file__).resolve().parent / "src"
-sys.path.insert(0, str(RUTA_SRC))
+if str(RUTA_SRC) not in sys.path:
+    sys.path.insert(0, str(RUTA_SRC))
 
 # Importar las clases del sistema
 from cliente import Cliente
@@ -31,7 +32,26 @@ def registrar_error(mensaje):
     print("[ERROR]", mensaje)
 
 
+def registrar_advertencia(mensaje):
+    registro.registrar_advertencia(mensaje)
+    print("[AVISO]", mensaje)
+
+
 def ejecutar_sistema():
+
+    # Listas internas para gestionar los objetos del sistema
+    clientes = []
+    servicios = []
+    reservas = []
+
+    # Inicializar referencias para evitar variables inexistentes
+    cliente = None
+    sala = None
+    equipo = None
+    asesoria = None
+    reserva1 = None
+    reserva2 = None
+    reserva3 = None
 
     mostrar_titulo("SISTEMA INTEGRAL DE GESTION")
 
@@ -49,14 +69,17 @@ def ejecutar_sistema():
             "3001234567"
         )
 
+        clientes.append(cliente)
+
         print(cliente.obtener_informacion())
         registrar_evento("Cliente registrado correctamente.")
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
+        cliente = None
         registrar_error(f"Error al registrar cliente: {error}")
 
     # -------------------------------------------------
-    # OPERACION 2: INTENTAR CREAR UN CLIENTE INVALIDO
+    # OPERACION 2: CREAR UN CLIENTE INVALIDO
     # -------------------------------------------------
     mostrar_titulo("OPERACION 2: VALIDACION DE CLIENTE")
 
@@ -69,9 +92,10 @@ def ejecutar_sistema():
             "3001234568"
         )
 
+        clientes.append(cliente_invalido)
         print(cliente_invalido.obtener_informacion())
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
         registrar_error(f"Cliente rechazado: {error}")
 
     # -------------------------------------------------
@@ -88,10 +112,13 @@ def ejecutar_sistema():
             50000
         )
 
+        servicios.append(sala)
+
         print(sala.obtener_informacion())
         registrar_evento("Servicio de sala creado correctamente.")
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
+        sala = None
         registrar_error(f"Error al crear sala: {error}")
 
     # -------------------------------------------------
@@ -100,6 +127,9 @@ def ejecutar_sistema():
     mostrar_titulo("OPERACION 4: CALCULO DE COSTO")
 
     try:
+        if sala is None:
+            raise ValueError("No existe una sala disponible para calcular.")
+
         total_sala = sala.calcular_costo(
             duracion=3,
             descuento=10,
@@ -109,7 +139,7 @@ def ejecutar_sistema():
         print(f"Costo total de la sala: ${total_sala:,.2f}")
         registrar_evento("Costo de reserva de sala calculado.")
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
         registrar_error(f"Error en calculo de sala: {error}")
 
     # -------------------------------------------------
@@ -126,10 +156,13 @@ def ejecutar_sistema():
             15000
         )
 
+        servicios.append(equipo)
+
         print(equipo.obtener_informacion())
         registrar_evento("Servicio de alquiler de equipos creado.")
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
+        equipo = None
         registrar_error(f"Error al crear equipo: {error}")
 
     # -------------------------------------------------
@@ -138,12 +171,15 @@ def ejecutar_sistema():
     mostrar_titulo("OPERACION 6: ALQUILER EXITOSO")
 
     try:
+        if equipo is None:
+            raise ValueError("No existe un equipo disponible para alquilar.")
+
         resultado = equipo.alquilar(2)
 
         print(resultado)
         registrar_evento("Alquiler de dos proyectores realizado.")
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
         registrar_error(f"Error en alquiler: {error}")
 
     # -------------------------------------------------
@@ -153,10 +189,13 @@ def ejecutar_sistema():
     mostrar_titulo("OPERACION 7: ALQUILER NO DISPONIBLE")
 
     try:
+        if equipo is None:
+            raise ValueError("No existe un equipo para realizar el alquiler.")
+
         resultado = equipo.alquilar(10)
         print(resultado)
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
         registrar_error(f"Alquiler rechazado: {error}")
 
     # -------------------------------------------------
@@ -174,10 +213,13 @@ def ejecutar_sistema():
             80000
         )
 
+        servicios.append(asesoria)
+
         print(asesoria.obtener_informacion())
         registrar_evento("Servicio de asesoria creado correctamente.")
 
-    except ValueError as error:
+    except (ValueError, TypeError) as error:
+        asesoria = None
         registrar_error(f"Error al crear asesoria: {error}")
 
     # -------------------------------------------------
@@ -186,12 +228,19 @@ def ejecutar_sistema():
     mostrar_titulo("OPERACION 9: CONFIRMAR RESERVA")
 
     try:
+        if cliente is None or asesoria is None:
+            raise ValueError(
+                "Se necesita un cliente y una asesoria validos."
+            )
+
         reserva1 = Reserva(
             "RES001",
             cliente,
             asesoria,
             2
         )
+
+        reservas.append(reserva1)
 
         print(reserva1.obtener_informacion())
 
@@ -200,7 +249,8 @@ def ejecutar_sistema():
 
         registrar_evento("Reserva RES001 confirmada.")
 
-    except (ValueError, ErrorReserva) as error:
+    except (ValueError, TypeError, ErrorReserva) as error:
+        reserva1 = None
         registrar_error(f"Error al confirmar reserva: {error}")
 
     # -------------------------------------------------
@@ -209,6 +259,9 @@ def ejecutar_sistema():
     mostrar_titulo("OPERACION 10: PROCESAR RESERVA")
 
     try:
+        if reserva1 is None:
+            raise ErrorReserva("No existe una reserva para procesar.")
+
         total = reserva1.procesar(
             descuento=5,
             impuesto=19
@@ -230,12 +283,19 @@ def ejecutar_sistema():
     mostrar_titulo("OPERACION 11: CANCELAR RESERVA")
 
     try:
+        if cliente is None or sala is None:
+            raise ValueError(
+                "Se necesita un cliente y una sala validos."
+            )
+
         reserva2 = Reserva(
             "RES002",
             cliente,
             sala,
             2
         )
+
+        reservas.append(reserva2)
 
         print(reserva2.obtener_informacion())
 
@@ -244,16 +304,21 @@ def ejecutar_sistema():
 
         registrar_evento("Reserva RES002 cancelada correctamente.")
 
-    except ErrorReserva as error:
+    except (ValueError, TypeError, ErrorReserva) as error:
+        reserva2 = None
         registrar_error(f"Error al cancelar reserva: {error}")
 
     # -------------------------------------------------
-    # OPERACION 12: INTENTAR PROCESAR UNA RESERVA
-    # SIN CONFIRMAR
+    # OPERACION 12: PROCESAR RESERVA SIN CONFIRMAR
     # -------------------------------------------------
     mostrar_titulo("OPERACION 12: VALIDACION DE ESTADO")
 
     try:
+        if cliente is None or asesoria is None:
+            raise ValueError(
+                "Se necesita un cliente y una asesoria validos."
+            )
+
         reserva3 = Reserva(
             "RES003",
             cliente,
@@ -261,26 +326,81 @@ def ejecutar_sistema():
             1
         )
 
+        reservas.append(reserva3)
+
         reserva3.procesar()
 
-    except ErrorReserva as error:
+    except (ValueError, TypeError, ErrorReserva) as error:
         registrar_error(
             f"Procesamiento rechazado por estado incorrecto: {error}"
         )
 
     # -------------------------------------------------
-    # RESUMEN FINAL
+    # OPERACION 13: DEMOSTRAR POLIMORFISMO CON LA LISTA
+    # DE SERVICIOS
+    # -------------------------------------------------
+    mostrar_titulo("OPERACION 13: DEMOSTRACION DE POLIMORFISMO")
+
+    try:
+        if not servicios:
+            registrar_advertencia(
+                "No hay servicios disponibles para demostrar polimorfismo."
+            )
+        else:
+            for servicio in servicios:
+                print("\nInformacion del servicio:")
+                print(servicio.obtener_informacion())
+
+                costo = servicio.calcular_costo(duracion=1)
+
+                print(f"Costo de una hora: ${costo:,.2f}")
+
+                registrar_evento(
+                    f"Servicio consultado mediante polimorfismo: "
+                    f"{servicio.nombre}"
+                )
+
+    except (ValueError, TypeError) as error:
+        registrar_error(f"Error en la demostracion de polimorfismo: {error}")
+
+    # -------------------------------------------------
+    # OPERACION 14: INTENTAR CREAR UN SERVICIO INVALIDO
+    # -------------------------------------------------
+    mostrar_titulo("OPERACION 14: VALIDACION DE SERVICIO")
+
+    try:
+        servicio_invalido = ReservaSala(
+            "SAL002",
+            "Sala invalida",
+            "Servicio de prueba con capacidad incorrecta",
+            0,
+            50000
+        )
+
+        servicios.append(servicio_invalido)
+
+        print(servicio_invalido.obtener_informacion())
+
+    except (ValueError, TypeError) as error:
+        registrar_error(f"Servicio rechazado por datos invalidos: {error}")
+
+    # -------------------------------------------------
+    # RESUMEN FINAL DEL SISTEMA
     # -------------------------------------------------
     mostrar_titulo("RESUMEN FINAL DEL SISTEMA")
 
-    print(cliente.obtener_informacion())
-    print(sala.obtener_informacion())
-    print(equipo.obtener_informacion())
-    print(asesoria.obtener_informacion())
+    print(f"\nClientes registrados: {len(clientes)}")
+    for elemento in clientes:
+        print(elemento.obtener_informacion())
 
-    print("\nEstado de la primera reserva:", reserva1.estado)
-    print("Estado de la segunda reserva:", reserva2.estado)
-    print("Estado de la tercera reserva:", reserva3.estado)
+    print(f"\nServicios creados correctamente: {len(servicios)}")
+    for elemento in servicios:
+        print(elemento.obtener_informacion())
+
+    print(f"\nReservas creadas: {len(reservas)}")
+    for elemento in reservas:
+        print(elemento.obtener_informacion())
+        print("Estado:", elemento.estado)
 
     registrar_evento("Finalizacion de las simulaciones del sistema.")
 

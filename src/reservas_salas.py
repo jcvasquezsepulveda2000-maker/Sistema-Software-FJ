@@ -37,15 +37,23 @@ class ReservaSala(Servicio):
         if not self.descripcion:
             raise ValueError("La descripción de la sala es obligatoria.")
 
-        if not isinstance(self._capacidad, int) or self._capacidad <= 0:
-            raise ValueError("La capacidad debe ser un entero mayor que cero.")
+        if (
+            isinstance(self._capacidad, bool)
+            or not isinstance(self._capacidad, int)
+            or self._capacidad <= 0
+        ):
+            raise ValueError(
+                "La capacidad debe ser un entero mayor que cero."
+            )
 
         if (
             isinstance(self._costo_por_hora, bool)
             or not isinstance(self._costo_por_hora, (int, float))
             or self._costo_por_hora <= 0
         ):
-            raise ValueError("El costo por hora debe ser mayor que cero.")
+            raise ValueError(
+                "El costo por hora debe ser mayor que cero."
+            )
 
         return True
 
@@ -55,13 +63,27 @@ class ReservaSala(Servicio):
             or not isinstance(duracion, (int, float))
             or duracion <= 0
         ):
-            raise ValueError("La duración debe ser mayor que cero.")
+            raise ValueError(
+                "La duración debe ser mayor que cero."
+            )
 
-        if not 0 <= descuento <= 100:
-            raise ValueError("El descuento debe estar entre 0 y 100.")
+        if (
+            isinstance(descuento, bool)
+            or not isinstance(descuento, (int, float))
+            or not 0 <= descuento <= 100
+        ):
+            raise ValueError(
+                "El descuento debe estar entre 0 y 100."
+            )
 
-        if not 0 <= impuesto <= 100:
-            raise ValueError("El impuesto debe estar entre 0 y 100.")
+        if (
+            isinstance(impuesto, bool)
+            or not isinstance(impuesto, (int, float))
+            or not 0 <= impuesto <= 100
+        ):
+            raise ValueError(
+                "El impuesto debe estar entre 0 y 100."
+            )
 
         subtotal = self._costo_por_hora * duracion
         valor_descuento = subtotal * (descuento / 100)

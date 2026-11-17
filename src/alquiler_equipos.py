@@ -42,7 +42,9 @@ class AlquilerEquipo(Servicio):
             or not isinstance(self._cantidad_disponible, int)
             or self._cantidad_disponible < 0
         ):
-            raise ValueError("La cantidad disponible debe ser un entero no negativo.")
+            raise ValueError(
+                "La cantidad disponible debe ser un entero no negativo."
+            )
 
         if (
             isinstance(self._costo_por_hora, bool)
@@ -59,7 +61,9 @@ class AlquilerEquipo(Servicio):
             or not isinstance(cantidad_solicitada, int)
             or cantidad_solicitada <= 0
         ):
-            raise ValueError("La cantidad solicitada debe ser un entero positivo.")
+            raise ValueError(
+                "La cantidad solicitada debe ser un entero positivo."
+            )
 
         return cantidad_solicitada <= self._cantidad_disponible
 
@@ -82,10 +86,18 @@ class AlquilerEquipo(Servicio):
         ):
             raise ValueError("La duración debe ser mayor que cero.")
 
-        if not 0 <= descuento <= 100:
+        if (
+            isinstance(descuento, bool)
+            or not isinstance(descuento, (int, float))
+            or not 0 <= descuento <= 100
+        ):
             raise ValueError("El descuento debe estar entre 0 y 100.")
 
-        if not 0 <= impuesto <= 100:
+        if (
+            isinstance(impuesto, bool)
+            or not isinstance(impuesto, (int, float))
+            or not 0 <= impuesto <= 100
+        ):
             raise ValueError("El impuesto debe estar entre 0 y 100.")
 
         subtotal = self._costo_por_hora * duracion
