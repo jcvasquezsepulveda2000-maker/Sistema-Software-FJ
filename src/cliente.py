@@ -39,18 +39,28 @@ class Cliente(Entidad):
         if not self.__nombre:
             raise ValueError("El nombre del cliente es obligatorio.")
 
-        if not re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{2,80}", self.__nombre):
+        if not re.fullmatch(
+            r"[A-Za-zÁÉÍÓÚáéíóúÑñÜü ]{2,80}",
+            self.__nombre
+        ):
             raise ValueError("El nombre contiene caracteres no permitidos.")
 
         if not re.fullmatch(r"\d{5,15}", self.__documento):
-            raise ValueError("El documento debe contener entre 5 y 15 dígitos.")
+            raise ValueError(
+                "El documento debe contener entre 5 y 15 dígitos."
+            )
 
         patron_correo = r"^[\w.+-]+@[\w-]+\.[A-Za-z]{2,}$"
+
         if not re.fullmatch(patron_correo, self.__correo):
-            raise ValueError("El correo electrónico no tiene un formato válido.")
+            raise ValueError(
+                "El correo electrónico no tiene un formato válido."
+            )
 
         if not re.fullmatch(r"\+?\d{7,15}", self.__telefono):
-            raise ValueError("El teléfono debe contener entre 7 y 15 dígitos.")
+            raise ValueError(
+                "El teléfono debe contener entre 7 y 15 dígitos."
+            )
 
         return True
 
@@ -68,8 +78,13 @@ class Cliente(Entidad):
 
         nuevo_correo = nuevo_correo.strip().lower()
 
-        if not re.fullmatch(r"^[\w.+-]+@[\w-]+\.[A-Za-z]{2,}$", nuevo_correo):
-            raise ValueError("El nuevo correo no tiene un formato válido.")
+        patron_correo = r"^[\w.+-]+@[\w-]+\.[A-Za-z]{2,}$"
+
+        if not re.fullmatch(patron_correo, nuevo_correo):
+            raise ValueError(
+                "El nuevo correo no tiene un formato válido."
+            )
 
         self.__correo = nuevo_correo
+
         return "Correo electrónico actualizado correctamente."

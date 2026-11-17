@@ -18,8 +18,14 @@ class AsesoriaEspecializada(Servicio):
     ):
         super().__init__(identificador, nombre, descripcion)
 
-        self._especialista = especialista.strip() if isinstance(especialista, str) else ""
-        self._especialidad = especialidad.strip() if isinstance(especialidad, str) else ""
+        self._especialista = (
+            especialista.strip()
+            if isinstance(especialista, str) else ""
+        )
+        self._especialidad = (
+            especialidad.strip()
+            if isinstance(especialidad, str) else ""
+        )
         self._costo_por_hora = costo_por_hora
 
         self.validar()
@@ -66,10 +72,18 @@ class AsesoriaEspecializada(Servicio):
         ):
             raise ValueError("La duración debe ser mayor que cero.")
 
-        if not 0 <= descuento <= 100:
+        if (
+            isinstance(descuento, bool)
+            or not isinstance(descuento, (int, float))
+            or not 0 <= descuento <= 100
+        ):
             raise ValueError("El descuento debe estar entre 0 y 100.")
 
-        if not 0 <= impuesto <= 100:
+        if (
+            isinstance(impuesto, bool)
+            or not isinstance(impuesto, (int, float))
+            or not 0 <= impuesto <= 100
+        ):
             raise ValueError("El impuesto debe estar entre 0 y 100.")
 
         subtotal = self._costo_por_hora * duracion
