@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 
-# Crear automáticamente la carpeta de registros
+# Crear automaticamente la carpeta de registros.
 CARPETA_LOGS = Path(__file__).resolve().parent.parent / "logs"
 CARPETA_LOGS.mkdir(parents=True, exist_ok=True)
 
@@ -21,7 +21,7 @@ class RegistroSistema:
         self.logger.setLevel(logging.INFO)
         self.logger.propagate = False
 
-        # Evitar agregar varios controladores al mismo registro
+        # Evitar agregar varios controladores al mismo registro.
         if not self.logger.handlers:
             formato = logging.Formatter(
                 "%(asctime)s - %(levelname)s - %(message)s"
@@ -35,15 +35,27 @@ class RegistroSistema:
             manejador.setFormatter(formato)
             self.logger.addHandler(manejador)
 
+    @staticmethod
+    def _validar_mensaje(mensaje):
+        if not isinstance(mensaje, str) or not mensaje.strip():
+            raise ValueError(
+                "El mensaje del registro debe ser texto y no estar vacio."
+            )
+
+        return mensaje.strip()
+
     def registrar_evento(self, mensaje):
+        mensaje = self._validar_mensaje(mensaje)
         self.logger.info(mensaje)
 
     def registrar_error(self, mensaje):
+        mensaje = self._validar_mensaje(mensaje)
         self.logger.error(mensaje)
 
     def registrar_advertencia(self, mensaje):
+        mensaje = self._validar_mensaje(mensaje)
         self.logger.warning(mensaje)
 
 
-# Instancia compartida para utilizar en los módulos
+# Instancia compartida para utilizar en los modulos.
 registro = RegistroSistema()

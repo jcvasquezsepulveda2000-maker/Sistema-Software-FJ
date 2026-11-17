@@ -5,14 +5,25 @@ from abc import ABC, abstractmethod
 class Entidad(ABC):
     """
     Clase abstracta general para las entidades del sistema.
-    Sirve como base para Cliente, Servicio y Reserva.
+    Sirve como base para Cliente y Servicio.
     """
 
     def __init__(self, identificador):
-        if not identificador:
+        if identificador is None:
             raise ValueError("El identificador es obligatorio.")
 
-        self._identificador = str(identificador)
+        identificador = str(identificador).strip()
+
+        if not identificador:
+            raise ValueError("El identificador no puede estar vacío.")
+
+        if not identificador.replace("-", "").replace("_", "").isalnum():
+            raise ValueError(
+                "El identificador solo puede contener letras, números, "
+                "guiones y guiones bajos."
+            )
+
+        self._identificador = identificador
 
     @property
     def identificador(self):
