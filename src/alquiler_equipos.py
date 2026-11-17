@@ -1,5 +1,5 @@
-
-from servicio import Servicio
+﻿from servicio import Servicio
+from excepciones import ErrorServicio, ErrorDisponibilidad
 
 
 class AlquilerEquipo(Servicio):
@@ -32,17 +32,17 @@ class AlquilerEquipo(Servicio):
 
     def validar(self):
         if not self.nombre:
-            raise ValueError("El nombre del equipo es obligatorio.")
+            raise ErrorServicio("El nombre del equipo es obligatorio.")
 
         if not self.descripcion:
-            raise ValueError("La descripcion del equipo es obligatoria.")
+            raise ErrorServicio("La descripcion del equipo es obligatoria.")
 
         if (
             isinstance(self._cantidad_disponible, bool)
             or not isinstance(self._cantidad_disponible, int)
             or self._cantidad_disponible < 0
         ):
-            raise ValueError(
+            raise ErrorServicio(
                 "La cantidad disponible debe ser un entero no negativo."
             )
 
@@ -60,7 +60,7 @@ class AlquilerEquipo(Servicio):
             or not isinstance(cantidad_solicitada, int)
             or cantidad_solicitada <= 0
         ):
-            raise ValueError(
+            raise ErrorServicio(
                 "La cantidad solicitada debe ser un entero positivo."
             )
 
@@ -68,7 +68,9 @@ class AlquilerEquipo(Servicio):
 
     def alquilar(self, cantidad_solicitada):
         if not self.verificar_disponibilidad(cantidad_solicitada):
-            raise ValueError("No hay suficientes equipos disponibles.")
+            raise ErrorDisponibilidad(
+                "No hay suficientes equipos disponibles."
+            )
 
         self._cantidad_disponible -= cantidad_solicitada
 

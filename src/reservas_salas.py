@@ -1,5 +1,5 @@
-
-from servicio import Servicio
+﻿from servicio import Servicio
+from excepciones import ErrorServicio
 
 
 class ReservaSala(Servicio):
@@ -32,17 +32,17 @@ class ReservaSala(Servicio):
 
     def validar(self):
         if not self.nombre:
-            raise ValueError("El nombre de la sala es obligatorio.")
+            raise ErrorServicio("El nombre de la sala es obligatorio.")
 
         if not self.descripcion:
-            raise ValueError("La descripcion de la sala es obligatoria.")
+            raise ErrorServicio("La descripcion de la sala es obligatoria.")
 
         if (
             isinstance(self._capacidad, bool)
             or not isinstance(self._capacidad, int)
             or self._capacidad <= 0
         ):
-            raise ValueError(
+            raise ErrorServicio(
                 "La capacidad debe ser un entero mayor que cero."
             )
 
