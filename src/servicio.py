@@ -1,9 +1,9 @@
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from entidad import Entidad
 
 
-class Servicio(Entidad):
+class Servicio(Entidad, ABC):
     """
     Clase abstracta que representa un servicio general.
     Los servicios específicos heredarán de esta clase.
@@ -12,8 +12,14 @@ class Servicio(Entidad):
     def __init__(self, identificador, nombre, descripcion):
         super().__init__(identificador)
 
-        self._nombre = nombre.strip() if isinstance(nombre, str) else ""
-        self._descripcion = descripcion.strip() if isinstance(descripcion, str) else ""
+        if not isinstance(nombre, str) or not nombre.strip():
+            raise ValueError("El nombre del servicio es obligatorio.")
+
+        if not isinstance(descripcion, str) or not descripcion.strip():
+            raise ValueError("La descripción del servicio es obligatoria.")
+
+        self._nombre = nombre.strip()
+        self._descripcion = descripcion.strip()
 
     @property
     def nombre(self):
@@ -25,30 +31,21 @@ class Servicio(Entidad):
 
     @abstractmethod
     def calcular_costo(self, duracion, descuento=0, impuesto=0):
-        """
-        Calcula el costo del servicio.
-        Cada servicio específico implementará su propia fórmula.
-        """
+        """Calcula el costo específico del servicio."""
         pass
 
     @abstractmethod
     def obtener_informacion(self):
-        """
-        Devuelve la información del servicio.
-        """
+        """Devuelve la información del servicio."""
         pass
 
     @abstractmethod
     def validar(self):
-        """
-        Valida los datos particulares del servicio.
-        """
+        """Valida los datos particulares del servicio."""
         pass
 
     def calcular_costo_con_impuestos(self, duracion, impuesto=0):
-        """
-        Variante de cálculo que permite aplicar impuestos.
-        """
+        """Calcula el costo aplicando impuestos sin descuento."""
         return self.calcular_costo(
             duracion,
             descuento=0,
