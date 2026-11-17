@@ -23,6 +23,7 @@ Desarrollar una aplicación organizada y funcional que permita simular operacion
 - Manejo de excepciones y errores.
 - Registro de eventos y errores en archivos de log.
 - Simulación de operaciones válidas e inválidas.
+- Aplicación de herencia, abstracción y polimorfismo.
 
 ## Tecnologías utilizadas
 
@@ -54,6 +55,18 @@ Sistema-Software-FJ/
 └── .gitignore
 ```
 
+## Descripción de los módulos
+
+- **entidad.py:** contiene la clase abstracta Entidad, que establece la estructura general de las entidades del sistema.
+- **cliente.py:** administra los datos de los clientes y sus respectivas validaciones.
+- **servicio.py:** define la estructura general de los servicios y los métodos para calcular costos.
+- **reservas_salas.py:** gestiona los servicios de reserva de salas.
+- **alquiler_equipos.py:** administra el alquiler y la disponibilidad de equipos.
+- **asesorias.py:** gestiona los servicios de asesorías especializadas.
+- **reserva.py:** permite crear, confirmar, cancelar y procesar reservas.
+- **registro.py:** administra el registro de eventos y errores del sistema.
+- **main.py:** ejecuta la aplicación y realiza las simulaciones de funcionamiento.
+
 ## Ejecución del programa
 
 1. Abrir el proyecto en Visual Studio Code.
@@ -66,22 +79,31 @@ python main.py
 
 ## Pruebas realizadas
 
-Se realizaron 12 operaciones de simulación para comprobar el funcionamiento del sistema. Estas incluyen registros correctos, validaciones de datos, cálculos de costos, alquileres, confirmación y cancelación de reservas, además de pruebas con operaciones inválidas.
+Se implementaron 14 operaciones de simulación para comprobar el funcionamiento del sistema. Estas incluyen:
 
-El sistema permite controlar los errores y continuar con las demás operaciones.
+- Registro de clientes y validación de información.
+- Creación de diferentes tipos de servicios.
+- Cálculo de costos.
+- Alquiler de equipos y comprobación de disponibilidad.
+- Confirmación, cancelación y procesamiento de reservas.
+- Pruebas con operaciones inválidas.
+- Demostración del polimorfismo.
+- Validación del manejo de excepciones.
+
+El sistema controla los errores generados durante las operaciones y continúa ejecutándose sin detener toda la aplicación.
 
 ## Almacenamiento de registros
 
-Los eventos y errores se guardan automáticamente en la carpeta `logs`, dentro del archivo `sistema.log`. No se utiliza una base de datos.
+Los eventos y errores se guardan automáticamente en la carpeta `logs`, dentro del archivo `sistema.log`. Esta carpeta y el archivo se generan durante la ejecución del programa. No se utiliza una base de datos.
 
 ## Principios de programación aplicados
 
-- Abstracción.
-- Herencia.
-- Encapsulación.
-- Polimorfismo.
-- Manejo de excepciones.
-- Organización modular del código.
+- **Abstracción:** definición de clases abstractas para establecer estructuras generales.
+- **Herencia:** reutilización de atributos y métodos mediante clases derivadas.
+- **Encapsulación:** protección y validación de los datos de las entidades.
+- **Polimorfismo:** implementación de comportamientos específicos para cada tipo de servicio.
+- **Manejo de excepciones:** control de errores para mantener la continuidad del sistema.
+- **Organización modular:** separación de las funcionalidades en diferentes archivos.
 
 ## Repositorio
 
