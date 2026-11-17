@@ -1,15 +1,10 @@
-
-import math
+﻿import math
 from datetime import datetime
 
 from entidad import Entidad
 from cliente import Cliente
 from servicio import Servicio
-
-
-class ErrorReserva(Exception):
-    """Excepcion personalizada para errores de reservas."""
-    pass
+from excepciones import ErrorSistema, ErrorReserva
 
 
 class Reserva(Entidad):
@@ -81,15 +76,26 @@ class Reserva(Entidad):
                 "La duracion debe ser un numero valido."
             )
 
-        if not math.isfinite(self._duracion) or self._duracion <= 0:
+        try:
+            if (
+                not math.isfinite(self._duracion)
+                or self._duracion <= 0
+            ):
+                raise ErrorReserva(
+                    "La duracion debe ser un numero finito "
+                    "mayor que cero."
+                )
+
+        except OverflowError as error:
             raise ErrorReserva(
-                "La duracion debe ser un numero finito mayor que cero."
-            )
+                "La duracion supera el limite numerico permitido."
+            ) from error
 
         try:
             self._cliente.validar()
             self._servicio.validar()
-        except ValueError as error:
+
+        except ErrorSistema as error:
             raise ErrorReserva(
                 "El cliente o el servicio contiene datos invalidos."
             ) from error
@@ -131,7 +137,7 @@ class Reserva(Entidad):
                 impuesto
             )
 
-        except (ValueError, TypeError) as error:
+        except (ErrorSistema, ValueError, TypeError, OverflowError) as error:
             raise ErrorReserva(
                 "No fue posible calcular el costo de la reserva."
             ) from error

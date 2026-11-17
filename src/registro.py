@@ -1,6 +1,7 @@
-
-import logging
+﻿import logging
 from pathlib import Path
+
+from excepciones import ErrorRegistro
 
 
 # Crear automaticamente la carpeta de registros.
@@ -38,7 +39,7 @@ class RegistroSistema:
     @staticmethod
     def _validar_mensaje(mensaje):
         if not isinstance(mensaje, str) or not mensaje.strip():
-            raise ValueError(
+            raise ErrorRegistro(
                 "El mensaje del registro debe ser texto y no estar vacio."
             )
 

@@ -1,6 +1,6 @@
-
-import re
+﻿import re
 from entidad import Entidad
+from excepciones import ErrorCliente
 
 
 class Cliente(Entidad):
@@ -44,38 +44,34 @@ class Cliente(Entidad):
         return self.__telefono
 
     def validar(self):
-        # Validar nombre
         if not self.__nombre:
-            raise ValueError("El nombre del cliente es obligatorio.")
+            raise ErrorCliente("El nombre del cliente es obligatorio.")
 
         if not (2 <= len(self.__nombre) <= 80):
-            raise ValueError(
+            raise ErrorCliente(
                 "El nombre debe tener entre 2 y 80 caracteres."
             )
 
         if not all(
-            caracter.isalpha() or caracter in " -'’"
+            caracter.isalpha() or caracter in " -'"
             for caracter in self.__nombre
         ):
-            raise ValueError(
+            raise ErrorCliente(
                 "El nombre contiene caracteres no permitidos."
             )
 
-        # Validar documento
         if not re.fullmatch(r"[0-9]{5,15}", self.__documento):
-            raise ValueError(
+            raise ErrorCliente(
                 "El documento debe contener entre 5 y 15 digitos."
             )
 
-        # Validar correo
         if not self._correo_valido(self.__correo):
-            raise ValueError(
+            raise ErrorCliente(
                 "El correo electronico no tiene un formato valido."
             )
 
-        # Validar telefono
         if not re.fullmatch(r"\+?[0-9]{7,15}", self.__telefono):
-            raise ValueError(
+            raise ErrorCliente(
                 "El telefono debe contener entre 7 y 15 digitos."
             )
 
@@ -96,12 +92,12 @@ class Cliente(Entidad):
 
     def actualizar_correo(self, nuevo_correo):
         if not isinstance(nuevo_correo, str):
-            raise ValueError("El correo debe ser texto.")
+            raise ErrorCliente("El correo debe ser texto.")
 
         nuevo_correo = nuevo_correo.strip().lower()
 
         if not self._correo_valido(nuevo_correo):
-            raise ValueError(
+            raise ErrorCliente(
                 "El nuevo correo no tiene un formato valido."
             )
 

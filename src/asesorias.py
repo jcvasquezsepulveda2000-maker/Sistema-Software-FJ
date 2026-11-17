@@ -1,5 +1,5 @@
-
-from servicio import Servicio
+﻿from servicio import Servicio
+from excepciones import ErrorServicio
 
 
 class AsesoriaEspecializada(Servicio):
@@ -44,16 +44,24 @@ class AsesoriaEspecializada(Servicio):
 
     def validar(self):
         if not self.nombre:
-            raise ValueError("El nombre de la asesoria es obligatorio.")
+            raise ErrorServicio(
+                "El nombre de la asesoria es obligatorio."
+            )
 
         if not self.descripcion:
-            raise ValueError("La descripcion de la asesoria es obligatoria.")
+            raise ErrorServicio(
+                "La descripcion de la asesoria es obligatoria."
+            )
 
         if not self._especialista:
-            raise ValueError("El nombre del especialista es obligatorio.")
+            raise ErrorServicio(
+                "El nombre del especialista es obligatorio."
+            )
 
         if not self._especialidad:
-            raise ValueError("La especialidad es obligatoria.")
+            raise ErrorServicio(
+                "La especialidad es obligatoria."
+            )
 
         Servicio.validar_numero(
             self._costo_por_hora,

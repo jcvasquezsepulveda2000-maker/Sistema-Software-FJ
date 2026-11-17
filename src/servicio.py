@@ -1,7 +1,7 @@
-
-import math
+﻿import math
 from abc import ABC, abstractmethod
 from entidad import Entidad
+from excepciones import ErrorServicio
 
 
 class Servicio(Entidad, ABC):
@@ -14,10 +14,10 @@ class Servicio(Entidad, ABC):
         super().__init__(identificador)
 
         if not isinstance(nombre, str) or not nombre.strip():
-            raise ValueError("El nombre del servicio es obligatorio.")
+            raise ErrorServicio("El nombre del servicio es obligatorio.")
 
         if not isinstance(descripcion, str) or not descripcion.strip():
-            raise ValueError("La descripcion del servicio es obligatoria.")
+            raise ErrorServicio("La descripcion del servicio es obligatoria.")
 
         self._nombre = " ".join(nombre.split())
         self._descripcion = " ".join(descripcion.split())
@@ -33,36 +33,33 @@ class Servicio(Entidad, ABC):
     @staticmethod
     def validar_numero(valor, nombre, minimo=None, maximo=None,
                        estrictamente_positivo=False):
-        """
-        Comprueba que un valor sea numerico, finito y respete
-        los limites establecidos.
-        """
+        """Comprueba que un valor sea numerico, finito y valido."""
 
         if isinstance(valor, bool) or not isinstance(valor, (int, float)):
-            raise ValueError(f"{nombre} debe ser un numero valido.")
+            raise ErrorServicio(f"{nombre} debe ser un numero valido.")
 
         try:
             if not math.isfinite(valor):
-                raise ValueError(f"{nombre} debe ser un numero finito.")
-        except OverflowError:
-            raise ValueError(f"{nombre} esta fuera del rango permitido.")
+                raise ErrorServicio(f"{nombre} debe ser un numero finito.")
+        except OverflowError as error:
+            raise ErrorServicio(
+                f"{nombre} esta fuera del rango permitido."
+            ) from error
 
         if estrictamente_positivo and valor <= 0:
-            raise ValueError(f"{nombre} debe ser mayor que cero.")
+            raise ErrorServicio(f"{nombre} debe ser mayor que cero.")
 
         if minimo is not None and valor < minimo:
-            raise ValueError(f"{nombre} no puede ser menor que {minimo}.")
+            raise ErrorServicio(f"{nombre} no puede ser menor que {minimo}.")
 
         if maximo is not None and valor > maximo:
-            raise ValueError(f"{nombre} no puede superar {maximo}.")
+            raise ErrorServicio(f"{nombre} no puede superar {maximo}.")
 
         return valor
 
     @staticmethod
     def calcular_total(duracion, costo_por_hora, descuento=0, impuesto=0):
-        """
-        Calcula el costo final aplicando descuento e impuesto.
-        """
+        """Calcula el costo final aplicando descuento e impuesto."""
 
         Servicio.validar_numero(
             duracion, "La duracion", estrictamente_positivo=True
@@ -84,12 +81,16 @@ class Servicio(Entidad, ABC):
 
         try:
             if not math.isfinite(total):
-                raise ValueError("El resultado del calculo no es finito.")
+                raise ErrorServicio(
+                    "El resultado del calculo no es finito."
+                )
 
             resultado = round(total, 2)
 
-        except OverflowError:
-            raise ValueError("El resultado del calculo es demasiado grande.")
+        except OverflowError as error:
+            raise ErrorServicio(
+                "El resultado del calculo es demasiado grande."
+            ) from error
 
         return resultado
 
