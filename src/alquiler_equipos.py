@@ -1,10 +1,14 @@
-﻿from servicio import Servicio
+﻿
+from servicio import Servicio
 from excepciones import ErrorServicio, ErrorDisponibilidad
 
 
 class AlquilerEquipo(Servicio):
     """
-    Servicio para alquilar equipos por horas.
+    Representa un servicio de alquiler de equipos por horas.
+
+    Hereda de Servicio y administra la cantidad de equipos
+    disponibles, el costo por hora y las operaciones de alquiler.
     """
 
     def __init__(
@@ -15,6 +19,12 @@ class AlquilerEquipo(Servicio):
         cantidad_disponible,
         costo_por_hora
     ):
+        """
+        Inicializa el servicio de alquiler de equipos.
+
+        Recibe los datos generales del servicio, la cantidad
+        disponible y el costo correspondiente a cada hora.
+        """
         super().__init__(identificador, nombre, descripcion)
 
         self._cantidad_disponible = cantidad_disponible
@@ -24,13 +34,21 @@ class AlquilerEquipo(Servicio):
 
     @property
     def cantidad_disponible(self):
+        """Devuelve la cantidad actual de equipos disponibles."""
         return self._cantidad_disponible
 
     @property
     def costo_por_hora(self):
+        """Devuelve el costo establecido por cada hora de alquiler."""
         return self._costo_por_hora
 
     def validar(self):
+        """
+        Comprueba que los datos del servicio sean correctos.
+
+        Verifica el nombre, la descripción, la cantidad disponible
+        y que el costo por hora sea un número positivo.
+        """
         if not self.nombre:
             raise ErrorServicio("El nombre del equipo es obligatorio.")
 
@@ -55,6 +73,14 @@ class AlquilerEquipo(Servicio):
         return True
 
     def verificar_disponibilidad(self, cantidad_solicitada):
+        """
+        Comprueba si existe suficiente cantidad de equipos.
+
+        Valida que la cantidad solicitada sea un entero positivo
+        y la compara con las unidades disponibles.
+
+        Devuelve True si hay disponibilidad y False en caso contrario.
+        """
         if (
             isinstance(cantidad_solicitada, bool)
             or not isinstance(cantidad_solicitada, int)
@@ -67,6 +93,13 @@ class AlquilerEquipo(Servicio):
         return cantidad_solicitada <= self._cantidad_disponible
 
     def alquilar(self, cantidad_solicitada):
+        """
+        Realiza el alquiler y actualiza las unidades disponibles.
+
+        Si no existe suficiente inventario, genera una excepción
+        de disponibilidad. Si el alquiler es posible, descuenta
+        las unidades solicitadas.
+        """
         if not self.verificar_disponibilidad(cantidad_solicitada):
             raise ErrorDisponibilidad(
                 "No hay suficientes equipos disponibles."
@@ -80,6 +113,12 @@ class AlquilerEquipo(Servicio):
         )
 
     def calcular_costo(self, duracion, descuento=0, impuesto=0):
+        """
+        Calcula el costo total del alquiler.
+
+        Utiliza la duración, el costo por hora y los porcentajes
+        opcionales de descuento e impuesto.
+        """
         return Servicio.calcular_total(
             duracion,
             self._costo_por_hora,
@@ -88,6 +127,12 @@ class AlquilerEquipo(Servicio):
         )
 
     def obtener_informacion(self):
+        """
+        Devuelve una descripción del servicio de alquiler.
+
+        Incluye el nombre, tipo de servicio, descripción,
+        cantidad disponible y costo por hora.
+        """
         return (
             f"Servicio: {self.nombre} | "
             f"Tipo: Alquiler de equipos | "
