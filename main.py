@@ -1,15 +1,15 @@
-﻿
 import sys
 from pathlib import Path
 
-# Permitir que Python encuentre los modulos de la carpeta src.
+# Permitir que Python encuentre los módulos de la carpeta src.
 RUTA_SRC = Path(__file__).resolve().parent / "src"
 
 if str(RUTA_SRC) not in sys.path:
     sys.path.insert(0, str(RUTA_SRC))
 
 
-# Importar las clases del sistema.
+# Importar las clases necesarias para gestionar clientes,
+# servicios especializados y reservas.
 from cliente import Cliente
 from reservas_salas import ReservaSala
 from alquiler_equipos import AlquilerEquipo
@@ -26,34 +26,58 @@ from excepciones import (
 
 
 def mostrar_titulo(texto):
+    """
+    Muestra un título centrado para separar las secciones
+    y operaciones durante la ejecución del sistema.
+    """
     print("\n" + "=" * 65)
     print(texto.center(65))
     print("=" * 65)
 
 
 def registrar_evento(mensaje):
+    """
+    Registra un evento informativo en el archivo de logs
+    y muestra un mensaje de confirmación en pantalla.
+    """
     registro.registrar_evento(mensaje)
     print("[OK]", mensaje)
 
 
 def registrar_error(mensaje):
+    """
+    Registra un error ocurrido durante una operación
+    y muestra su notificación en pantalla.
+    """
     registro.registrar_error(mensaje)
     print("[ERROR]", mensaje)
 
 
 def registrar_advertencia(mensaje):
+    """
+    Registra una advertencia del sistema y la muestra
+    en pantalla para informar sobre una situación especial.
+    """
     registro.registrar_advertencia(mensaje)
     print("[AVISO]", mensaje)
 
 
 def ejecutar_sistema():
+    """
+    Ejecuta las simulaciones completas del sistema de gestión.
+
+    Crea clientes, servicios y reservas; realiza operaciones
+    válidas e inválidas; demuestra cálculos, polimorfismo,
+    manejo de excepciones y registro de eventos y errores.
+    Finalmente, presenta un resumen de los objetos creados.
+    """
 
     # Listas internas para gestionar los objetos del sistema.
     clientes = []
     servicios = []
     reservas = []
 
-    # Inicializar referencias.
+    # Inicializar referencias para controlar los objetos creados.
     cliente = None
     sala = None
     equipo = None
@@ -66,6 +90,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 1: CREAR UN CLIENTE VALIDO
+    # Se registra un cliente con información correcta.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 1: REGISTRO DE CLIENTE")
 
@@ -90,6 +115,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 2: CREAR UN CLIENTE INVALIDO
+    # Se intenta registrar un cliente con correo incorrecto.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 2: VALIDACION DE CLIENTE")
 
@@ -110,6 +136,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 3: CREAR SERVICIO DE RESERVA DE SALA
+    # Se crea una sala con capacidad y costo válidos.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 3: RESERVA DE SALA")
 
@@ -132,6 +159,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 4: DEMOSTRAR VARIANTES DE CALCULO
+    # Se realizan cálculos base, con descuento e impuestos.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 4: VARIANTES DE CALCULO")
 
@@ -141,22 +169,22 @@ def ejecutar_sistema():
                 "No existe una sala disponible para calcular."
             )
 
-        # Calculo del costo base.
+        # Cálculo del costo base.
         costo_base = sala.calcular_costo(duracion=3)
 
-        # Calculo aplicando descuento.
+        # Cálculo aplicando descuento.
         costo_descuento = sala.calcular_costo_con_descuento(
             duracion=3,
             descuento=10
         )
 
-        # Calculo aplicando impuestos.
+        # Cálculo aplicando impuestos.
         costo_impuesto = sala.calcular_costo_con_impuestos(
             duracion=3,
             impuesto=19
         )
 
-        # Calculo aplicando descuento e impuestos.
+        # Cálculo aplicando descuento e impuestos.
         costo_final = sala.calcular_costo(
             duracion=3,
             descuento=10,
@@ -179,6 +207,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 5: CREAR SERVICIO DE ALQUILER DE EQUIPOS
+    # Se registra un servicio de alquiler de proyectores.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 5: ALQUILER DE EQUIPOS")
 
@@ -201,6 +230,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 6: ALQUILAR EQUIPOS DISPONIBLES
+    # Se realiza un alquiler de dos proyectores.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 6: ALQUILER EXITOSO")
 
@@ -225,6 +255,7 @@ def ejecutar_sistema():
     # -------------------------------------------------
     # OPERACION 7: INTENTAR ALQUILAR MAS EQUIPOS
     # DE LOS DISPONIBLES
+    # Se prueba el manejo de una disponibilidad insuficiente.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 7: ALQUILER NO DISPONIBLE")
 
@@ -242,6 +273,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 8: CREAR SERVICIO DE ASESORIA
+    # Se registra una asesoría con especialista y especialidad.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 8: ASESORIA ESPECIALIZADA")
 
@@ -265,6 +297,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 9: CREAR Y CONFIRMAR UNA RESERVA
+    # Se crea una reserva válida y se cambia su estado.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 9: CONFIRMAR RESERVA")
 
@@ -295,6 +328,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 10: PROCESAR UNA RESERVA
+    # Se calcula el costo de una reserva previamente confirmada.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 10: PROCESAR RESERVA")
 
@@ -321,6 +355,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 11: CANCELAR UNA RESERVA PENDIENTE
+    # Se crea una reserva y se cancela antes de confirmarla.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 11: CANCELAR RESERVA")
 
@@ -351,6 +386,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 12: PROCESAR RESERVA SIN CONFIRMAR
+    # Se verifica que no se procesen reservas pendientes.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 12: VALIDACION DE ESTADO")
 
@@ -377,6 +413,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 13: DEMOSTRAR POLIMORFISMO
+    # Se recorren los servicios y se utilizan sus métodos comunes.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 13: DEMOSTRACION DE POLIMORFISMO")
 
@@ -413,6 +450,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 14: INTENTAR CREAR UN SERVICIO INVALIDO
+    # Se intenta crear una sala con capacidad igual a cero.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 14: VALIDACION DE SERVICIO")
 
@@ -435,6 +473,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 15: INTENTAR CANCELAR UNA RESERVA PROCESADA
+    # Se comprueba que una reserva procesada no pueda cancelarse.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 15: CANCELACION NO PERMITIDA")
 
@@ -459,6 +498,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 16: INTENTAR APLICAR UN DESCUENTO INVALIDO
+    # Se prueba el rechazo de un descuento superior al 100 %.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 16: DESCUENTO FUERA DE RANGO")
 
@@ -482,6 +522,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # OPERACION 17: INTENTAR CREAR UNA RESERVA SIN CLIENTE
+    # Se comprueba que una reserva requiera un cliente válido.
     # -------------------------------------------------
     mostrar_titulo("OPERACION 17: RESERVA SIN CLIENTE")
 
@@ -507,6 +548,7 @@ def ejecutar_sistema():
 
     # -------------------------------------------------
     # RESUMEN FINAL DEL SISTEMA
+    # Mostrar los clientes, servicios y reservas creados.
     # -------------------------------------------------
     mostrar_titulo("RESUMEN FINAL DEL SISTEMA")
 
@@ -538,11 +580,14 @@ def ejecutar_sistema():
         except (ErrorSistema, ValueError, TypeError, AttributeError) as error:
             registrar_error(f"Error al mostrar una reserva: {error}")
 
+    # Registrar la finalización de todas las simulaciones.
     registrar_evento("Finalizacion de las simulaciones del sistema.")
 
     print("\nLas simulaciones finalizaron.")
     print("Los eventos y errores se guardaron en la carpeta logs.")
 
 
+# Punto de entrada principal del programa.
+# Ejecutar las simulaciones únicamente cuando se inicia este archivo.
 if __name__ == "__main__":
     ejecutar_sistema()
