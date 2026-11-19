@@ -1,4 +1,5 @@
-﻿import sys
+﻿
+import sys
 from pathlib import Path
 
 # Permitir que Python encuentre los modulos de la carpeta src.
@@ -430,6 +431,78 @@ def ejecutar_sistema():
     except (ErrorSistema, ValueError, TypeError) as error:
         registrar_error(
             f"Servicio rechazado por datos invalidos: {error}"
+        )
+
+    # -------------------------------------------------
+    # OPERACION 15: INTENTAR CANCELAR UNA RESERVA PROCESADA
+    # -------------------------------------------------
+    mostrar_titulo("OPERACION 15: CANCELACION NO PERMITIDA")
+
+    try:
+        if reserva1 is None:
+            raise ErrorOperacion(
+                "No existe una reserva para realizar la prueba."
+            )
+
+        if reserva1.estado != "Procesada":
+            raise ErrorOperacion(
+                "La prueba requiere una reserva procesada."
+            )
+
+        resultado = reserva1.cancelar()
+        print(resultado)
+
+    except (ErrorSistema, ValueError, TypeError) as error:
+        registrar_error(
+            f"Cancelacion rechazada por estado incorrecto: {error}"
+        )
+
+    # -------------------------------------------------
+    # OPERACION 16: INTENTAR APLICAR UN DESCUENTO INVALIDO
+    # -------------------------------------------------
+    mostrar_titulo("OPERACION 16: DESCUENTO FUERA DE RANGO")
+
+    try:
+        if sala is None:
+            raise ErrorOperacion(
+                "No existe una sala para realizar el calculo."
+            )
+
+        costo = sala.calcular_costo(
+            duracion=1,
+            descuento=150
+        )
+
+        print(f"Costo calculado: ${costo:,.2f}")
+
+    except (ErrorSistema, ValueError, TypeError, OverflowError) as error:
+        registrar_error(
+            f"Descuento rechazado por estar fuera de rango: {error}"
+        )
+
+    # -------------------------------------------------
+    # OPERACION 17: INTENTAR CREAR UNA RESERVA SIN CLIENTE
+    # -------------------------------------------------
+    mostrar_titulo("OPERACION 17: RESERVA SIN CLIENTE")
+
+    try:
+        if sala is None:
+            raise ErrorOperacion(
+                "No existe un servicio para realizar la prueba."
+            )
+
+        reserva_sin_cliente = Reserva(
+            "RES004",
+            None,
+            sala,
+            1
+        )
+
+        print(reserva_sin_cliente.obtener_informacion())
+
+    except (ErrorSistema, ValueError, TypeError) as error:
+        registrar_error(
+            f"Reserva rechazada por falta de cliente: {error}"
         )
 
     # -------------------------------------------------
